@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VM-tipping 2026</title>
+<style>
+:root { --bg:#0d1b2a; --card:#1b263b; --line:#2e3f57; --text:#e0e1dd;
+        --muted:#9aa5b1; --accent:#ffd166; --green:#7ddf64; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+       background:var(--bg); color:var(--text); }
+header { padding:1.2rem 1rem .6rem; text-align:center; }
+h1 { margin:0; font-size:1.5rem; }
+.sub { color:var(--muted); font-size:.85rem; margin-top:.3rem; }
+nav { display:flex; justify-content:center; gap:.5rem; padding:.8rem 0;
+      position:sticky; top:0; background:var(--bg); z-index:5; }
+nav button { background:var(--card); color:var(--text); border:1px solid var(--line);
+      padding:.5rem 1rem; border-radius:999px; cursor:pointer; font-size:.95rem; }
+nav button.active { background:var(--accent); color:#222; border-color:var(--accent);
+      font-weight:600; }
+main { max-width:880px; margin:0 auto; padding:0 .7rem 3rem; }
+table { width:100%; border-collapse:collapse; background:var(--card);
+        border-radius:10px; overflow:hidden; }
+th,td { padding:.55rem .6rem; text-align:left; border-bottom:1px solid var(--line);
+        font-size:.92rem; }
+th { color:var(--muted); font-weight:600; font-size:.8rem; text-transform:uppercase; }
+td.num, th.num { text-align:right; font-variant-numeric:tabular-nums; }
+tr.top1 td { background:rgba(255,209,102,.14); }
+tr.top2 td { background:rgba(255,255,255,.06); }
+tr.top3 td { background:rgba(205,127,50,.10); }
+.match { background:var(--card); border:1px solid var(--line); border-radius:10px;
+         margin:.5rem 0; }
+.match summary { display:flex; align-items:center; gap:.7rem; padding:.6rem .8rem;
+         cursor:pointer; list-style:none; flex-wrap:wrap; }
+.match summary::-webkit-details-marker { display:none; }
+.mnum { color:var(--muted); font-size:.75rem; min-width:5.2rem; }
+.mteams { flex:1; min-width:12rem; }
+.mscore { font-weight:700; font-variant-numeric:tabular-nums; }
+.mextra { color:var(--muted); font-size:.8rem; }
+.live { color:var(--green); font-weight:600; font-size:.8rem; }
+.tips { padding:0 .8rem .7rem; }
+.tips table { background:transparent; }
+.flag { display:inline-block; font-size:.7rem; border:1px solid var(--line);
+        border-radius:4px; padding:0 .3rem; margin-left:.25rem; color:var(--muted); }
+.flag.on { border-color:var(--green); color:var(--green); }
+.datehead { color:var(--accent); margin:1.2rem 0 .4rem; font-size:.95rem;
+            font-weight:600; }
+.empty { color:var(--muted); text-align:center; padding:2rem; }
+footer { color:var(--muted); text-align:center; font-size:.75rem; padding:1rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>⚽ VM-tipping 2026</h1>
+  <div class="sub" id="updated"></div>
+</header>
+<nav>
+  <button data-tab="board" class="active">Sammenlagt</button>
+  <button data-tab="matches">Kamper</button>
+  <button data-tab="upcoming">Kommende</button>
+</nav>
+<main>
+  <section id="board"></section>
+  <section id="matches" hidden></section>
+  <section id="upcoming" hidden></section>
+</main>
+<footer>2 p riktig målsum &middot; 3 p riktig utfall &middot; 5 p eksakt resultat
+&middot; 2 p per riktig gruppeplassering (ordinær tid teller)</footer>
+<script id="data" type="application/json">{"updated": "2026-06-11T08:03:21.386283+00:00", "finished": 0, "leaderboard": [], "standings": {}, "games": [{"game": 1, "stage": "Gruppespill", "group": "A", "home": "Mexico", "away": "South Africa", "utc": "2026-06-11T19:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 2, "stage": "Gruppespill", "group": "A", "home": "South Korea", "away": "Czechia", "utc": "2026-06-12T02:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 3, "stage": "Gruppespill", "group": "B", "home": "Canada", "away": "Bosnia and Herzegovina", "utc": "2026-06-12T19:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 4, "stage": "Gruppespill", "group": "D", "home": "USA", "away": "Paraguay", "utc": "2026-06-13T01:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 5, "stage": "Gruppespill", "group": "D", "home": "Australia", "away": "Turkey", "utc": "2026-06-14T04:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 6, "stage": "Gruppespill", "group": "B", "home": "Qatar", "away": "Switzerland", "utc": "2026-06-13T19:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 7, "stage": "Gruppespill", "group": "C", "home": "Brazil", "away": "Morocco", "utc": "2026-06-13T22:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 8, "stage": "Gruppespill", "group": "C", "home": "Haiti", "away": "Scotland", "utc": "2026-06-14T01:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 9, "stage": "Gruppespill", "group": "E", "home": "Germany", "away": "Curacao", "utc": "2026-06-14T17:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 10, "stage": "Gruppespill", "group": "F", "home": "Netherlands", "away": "Japan", "utc": "2026-06-14T20:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 11, "stage": "Gruppespill", "group": "E", "home": "Ivory Coast", "away": "Ecuador", "utc": "2026-06-14T23:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 12, "stage": "Gruppespill", "group": "F", "home": "Sweden", "away": "Tunisia", "utc": "2026-06-15T02:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 13, "stage": "Gruppespill", "group": "H", "home": "Spain", "away": "Cape Verde", "utc": "2026-06-15T16:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 14, "stage": "Gruppespill", "group": "G", "home": "Belgium", "away": "Egypt", "utc": "2026-06-15T19:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 15, "stage": "Gruppespill", "group": "H", "home": "Saudi Arabia", "away": "Uruguay", "utc": "2026-06-15T22:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 16, "stage": "Gruppespill", "group": "G", "home": "Iran", "away": "New Zealand", "utc": "2026-06-16T01:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 17, "stage": "Gruppespill", "group": "J", "home": "Austria", "away": "Jordan", "utc": "2026-06-17T04:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 18, "stage": "Gruppespill", "group": "I", "home": "France", "away": "Senegal", "utc": "2026-06-16T19:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 19, "stage": "Gruppespill", "group": "I", "home": "Iraq", "away": "Norway", "utc": "2026-06-16T22:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 20, "stage": "Gruppespill", "group": "J", "home": "Argentina", "away": "Algeria", "utc": "2026-06-17T01:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 21, "stage": "Gruppespill", "group": "K", "home": "Portugal", "away": "DR Congo", "utc": "2026-06-17T17:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 22, "stage": "Gruppespill", "group": "L", "home": "England", "away": "Croatia", "utc": "2026-06-17T20:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 23, "stage": "Gruppespill", "group": "L", "home": "Ghana", "away": "Panama", "utc": "2026-06-17T23:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 24, "stage": "Gruppespill", "group": "K", "home": "Uzbekistan", "away": "Colombia", "utc": "2026-06-18T02:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 25, "stage": "Gruppespill", "group": "A", "home": "Czechia", "away": "South Africa", "utc": "2026-06-18T16:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 26, "stage": "Gruppespill", "group": "B", "home": "Switzerland", "away": "Bosnia and Herzegovina", "utc": "2026-06-18T19:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 27, "stage": "Gruppespill", "group": "B", "home": "Canada", "away": "Qatar", "utc": "2026-06-18T22:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 28, "stage": "Gruppespill", "group": "A", "home": "Mexico", "away": "South Korea", "utc": "2026-06-19T01:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 29, "stage": "Gruppespill", "group": "D", "home": "Turkey", "away": "Paraguay", "utc": "2026-06-20T03:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 30, "stage": "Gruppespill", "group": "D", "home": "USA", "away": "Australia", "utc": "2026-06-19T19:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 31, "stage": "Gruppespill", "group": "C", "home": "Scotland", "away": "Morocco", "utc": "2026-06-19T22:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 32, "stage": "Gruppespill", "group": "C", "home": "Brazil", "away": "Haiti", "utc": "2026-06-20T00:30:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 33, "stage": "Gruppespill", "group": "F", "home": "Tunisia", "away": "Japan", "utc": "2026-06-21T04:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 34, "stage": "Gruppespill", "group": "F", "home": "Netherlands", "away": "Sweden", "utc": "2026-06-20T17:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 35, "stage": "Gruppespill", "group": "E", "home": "Germany", "away": "Ivory Coast", "utc": "2026-06-20T20:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 36, "stage": "Gruppespill", "group": "E", "home": "Ecuador", "away": "Curacao", "utc": "2026-06-21T00:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 37, "stage": "Gruppespill", "group": "H", "home": "Spain", "away": "Saudi Arabia", "utc": "2026-06-21T16:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 38, "stage": "Gruppespill", "group": "G", "home": "Belgium", "away": "Iran", "utc": "2026-06-21T19:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 39, "stage": "Gruppespill", "group": "H", "home": "Uruguay", "away": "Cape Verde", "utc": "2026-06-21T22:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 40, "stage": "Gruppespill", "group": "G", "home": "New Zealand", "away": "Egypt", "utc": "2026-06-22T01:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 41, "stage": "Gruppespill", "group": "J", "home": "Argentina", "away": "Austria", "utc": "2026-06-22T17:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 42, "stage": "Gruppespill", "group": "I", "home": "France", "away": "Iraq", "utc": "2026-06-22T21:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 43, "stage": "Gruppespill", "group": "I", "home": "Norway", "away": "Senegal", "utc": "2026-06-23T00:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 44, "stage": "Gruppespill", "group": "J", "home": "Jordan", "away": "Algeria", "utc": "2026-06-23T03:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 45, "stage": "Gruppespill", "group": "K", "home": "Portugal", "away": "Uzbekistan", "utc": "2026-06-23T17:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 46, "stage": "Gruppespill", "group": "L", "home": "England", "away": "Ghana", "utc": "2026-06-23T20:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 47, "stage": "Gruppespill", "group": "L", "home": "Panama", "away": "Croatia", "utc": "2026-06-23T23:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 48, "stage": "Gruppespill", "group": "K", "home": "Colombia", "away": "DR Congo", "utc": "2026-06-24T02:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 49, "stage": "Gruppespill", "group": "B", "home": "Switzerland", "away": "Canada", "utc": "2026-06-24T19:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 50, "stage": "Gruppespill", "group": "B", "home": "Bosnia and Herzegovina", "away": "Qatar", "utc": "2026-06-24T19:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 51, "stage": "Gruppespill", "group": "C", "home": "Scotland", "away": "Brazil", "utc": "2026-06-24T22:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 52, "stage": "Gruppespill", "group": "C", "home": "Morocco", "away": "Haiti", "utc": "2026-06-24T22:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 53, "stage": "Gruppespill", "group": "A", "home": "Czechia", "away": "Mexico", "utc": "2026-06-25T01:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 54, "stage": "Gruppespill", "group": "A", "home": "South Africa", "away": "South Korea", "utc": "2026-06-25T01:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 55, "stage": "Gruppespill", "group": "E", "home": "Ecuador", "away": "Germany", "utc": "2026-06-25T20:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 56, "stage": "Gruppespill", "group": "E", "home": "Curacao", "away": "Ivory Coast", "utc": "2026-06-25T20:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 57, "stage": "Gruppespill", "group": "F", "home": "Japan", "away": "Sweden", "utc": "2026-06-25T23:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 58, "stage": "Gruppespill", "group": "F", "home": "Tunisia", "away": "Netherlands", "utc": "2026-06-25T23:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 59, "stage": "Gruppespill", "group": "D", "home": "Turkey", "away": "USA", "utc": "2026-06-26T02:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 60, "stage": "Gruppespill", "group": "D", "home": "Paraguay", "away": "Australia", "utc": "2026-06-26T02:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 61, "stage": "Gruppespill", "group": "I", "home": "Norway", "away": "France", "utc": "2026-06-26T19:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 62, "stage": "Gruppespill", "group": "I", "home": "Senegal", "away": "Iraq", "utc": "2026-06-26T19:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 63, "stage": "Gruppespill", "group": "H", "home": "Uruguay", "away": "Spain", "utc": "2026-06-27T00:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 64, "stage": "Gruppespill", "group": "H", "home": "Cape Verde", "away": "Saudi Arabia", "utc": "2026-06-27T00:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 65, "stage": "Gruppespill", "group": "G", "home": "Egypt", "away": "Iran", "utc": "2026-06-27T03:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 66, "stage": "Gruppespill", "group": "G", "home": "New Zealand", "away": "Belgium", "utc": "2026-06-27T03:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 67, "stage": "Gruppespill", "group": "L", "home": "Panama", "away": "England", "utc": "2026-06-27T21:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 68, "stage": "Gruppespill", "group": "L", "home": "Croatia", "away": "Ghana", "utc": "2026-06-27T21:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 69, "stage": "Gruppespill", "group": "K", "home": "Colombia", "away": "Portugal", "utc": "2026-06-27T23:30:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 70, "stage": "Gruppespill", "group": "K", "home": "DR Congo", "away": "Uzbekistan", "utc": "2026-06-27T23:30:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 71, "stage": "Gruppespill", "group": "J", "home": "Algeria", "away": "Austria", "utc": "2026-06-28T02:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 72, "stage": "Gruppespill", "group": "J", "home": "Jordan", "away": "Argentina", "utc": "2026-06-28T02:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 73, "stage": "32-delsfinale", "group": null, "home": null, "away": null, "utc": "2026-06-28T19:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 74, "stage": "32-delsfinale", "group": null, "home": null, "away": null, "utc": "2026-06-29T20:30:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 75, "stage": "32-delsfinale", "group": null, "home": null, "away": null, "utc": "2026-06-30T01:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 76, "stage": "32-delsfinale", "group": null, "home": null, "away": null, "utc": "2026-06-29T17:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 77, "stage": "32-delsfinale", "group": null, "home": null, "away": null, "utc": "2026-06-30T21:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 78, "stage": "32-delsfinale", "group": null, "home": null, "away": null, "utc": "2026-06-30T17:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 79, "stage": "32-delsfinale", "group": null, "home": null, "away": null, "utc": "2026-07-01T01:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 80, "stage": "32-delsfinale", "group": null, "home": null, "away": null, "utc": "2026-07-01T16:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 81, "stage": "32-delsfinale", "group": null, "home": null, "away": null, "utc": "2026-07-02T00:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 82, "stage": "32-delsfinale", "group": null, "home": null, "away": null, "utc": "2026-07-01T20:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 83, "stage": "32-delsfinale", "group": null, "home": null, "away": null, "utc": "2026-07-02T23:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 84, "stage": "32-delsfinale", "group": null, "home": null, "away": null, "utc": "2026-07-02T19:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 85, "stage": "32-delsfinale", "group": null, "home": null, "away": null, "utc": "2026-07-03T03:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 86, "stage": "32-delsfinale", "group": null, "home": null, "away": null, "utc": "2026-07-03T22:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 87, "stage": "32-delsfinale", "group": null, "home": null, "away": null, "utc": "2026-07-04T01:30:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 88, "stage": "32-delsfinale", "group": null, "home": null, "away": null, "utc": "2026-07-03T18:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 89, "stage": "Åttedelsfinale", "group": null, "home": null, "away": null, "utc": "2026-07-04T21:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 90, "stage": "Åttedelsfinale", "group": null, "home": null, "away": null, "utc": "2026-07-04T17:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 91, "stage": "Åttedelsfinale", "group": null, "home": null, "away": null, "utc": "2026-07-05T20:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 92, "stage": "Åttedelsfinale", "group": null, "home": null, "away": null, "utc": "2026-07-06T00:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 93, "stage": "Åttedelsfinale", "group": null, "home": null, "away": null, "utc": "2026-07-06T19:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 94, "stage": "Åttedelsfinale", "group": null, "home": null, "away": null, "utc": "2026-07-07T00:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 95, "stage": "Åttedelsfinale", "group": null, "home": null, "away": null, "utc": "2026-07-07T16:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 96, "stage": "Åttedelsfinale", "group": null, "home": null, "away": null, "utc": "2026-07-07T20:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 97, "stage": "Kvartfinale", "group": null, "home": null, "away": null, "utc": "2026-07-09T20:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 98, "stage": "Kvartfinale", "group": null, "home": null, "away": null, "utc": "2026-07-10T19:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 99, "stage": "Kvartfinale", "group": null, "home": null, "away": null, "utc": "2026-07-11T21:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 100, "stage": "Kvartfinale", "group": null, "home": null, "away": null, "utc": "2026-07-12T01:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 101, "stage": "Semifinale", "group": null, "home": null, "away": null, "utc": "2026-07-14T19:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 102, "stage": "Semifinale", "group": null, "home": null, "away": null, "utc": "2026-07-15T19:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 103, "stage": "Bronsefinale", "group": null, "home": null, "away": null, "utc": "2026-07-18T21:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}, {"game": 104, "stage": "Finale", "group": null, "home": null, "away": null, "utc": "2026-07-19T19:00:00Z", "status": "TIMED", "score": null, "et": null, "pens": null, "winner": null, "tips": []}]}</script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+const fmtTime = iso => new Date(iso).toLocaleString('no-NO',
+  {weekday:'short', day:'numeric', month:'short', hour:'2-digit',
+   minute:'2-digit', timeZone:'Europe/Oslo'});
+const esc = s => String(s ?? '').replace(/[&<>"]/g,
+  c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+document.getElementById('updated').textContent = D.updated
+  ? `Oppdatert ${fmtTime(D.updated)} · ${D.finished} av 104 kamper spilt`
+  : 'Venter på første oppdatering';
+
+function renderBoard() {
+  const el = document.getElementById('board');
+  if (!D.leaderboard.length) {
+    el.innerHTML = '<div class="empty">Ingen deltakere registrert ennå.</div>';
+    return;
+  }
+  let rows = D.leaderboard.map(p => `
+    <tr class="top${p.rank<=3?p.rank:''}">
+      <td class="num">${p.rank}</td><td>${esc(p.name)}</td>
+      <td class="num"><strong>${p.total}</strong></td>
+      <td class="num">${p.match_points}</td><td class="num">${p.group_points}</td>
+      <td class="num">${p.exact}</td><td class="num">${p.groups_correct}</td>
+    </tr>`).join('');
+  el.innerHTML = `<table><thead><tr><th class="num">#</th><th>Navn</th>
+    <th class="num">Poeng</th><th class="num">Kamp</th><th class="num">Gruppe</th>
+    <th class="num">Eksakte</th><th class="num">Plasseringer</th></tr></thead>
+    <tbody>${rows}</tbody></table>`;
+}
+
+function matchCard(g, open) {
+  const teams = (g.home && g.away) ? `${esc(g.home)} – ${esc(g.away)}`
+    : 'Lag ikke klare';
+  let score = '';
+  if (g.score) {
+    score = `${g.score[0]}–${g.score[1]}`;
+    let extra = [];
+    if (g.et) extra.push(`e.o. ${g.et[0]}–${g.et[1]}`);
+    if (g.pens) extra.push(`str. ${g.pens[0]}–${g.pens[1]}`);
+    if (extra.length) score += ` <span class="mextra">(${extra.join(', ')})</span>`;
+  }
+  const status = g.status === 'FINISHED' ? ''
+    : (g.status === 'IN_PLAY' || g.status === 'PAUSED')
+      ? '<span class="live">PÅGÅR</span>'
+      : `<span class="mextra">${fmtTime(g.utc)}</span>`;
+  const flagNames = ['målsum','utfall','eksakt'];
+  const tips = g.tips.map(t => `<tr>
+      <td>${esc(t.n)}</td><td class="num">${t.s}</td>
+      <td>${g.game > 72 ? esc(t.w||'') : ''}</td>
+      <td class="num">${t.p ?? ''}</td>
+      <td>${(t.f||[]).map((on,i) =>
+        `<span class="flag ${on?'on':''}">${flagNames[i]}</span>`).join('')}</td>
+    </tr>`).join('');
+  return `<details class="match" ${open?'open':''}>
+    <summary>
+      <span class="mnum">#${g.game} ${esc(g.stage)}${g.group?' '+esc(g.group):''}</span>
+      <span class="mteams">${teams}</span>
+      <span class="mscore">${score}</span> ${status}
+    </summary>
+    <div class="tips"><table><thead><tr><th>Deltaker</th><th class="num">Tips</th>
+      <th>${g.game>72?'Videre':''}</th><th class="num">Poeng</th><th></th></tr></thead>
+      <tbody>${tips || '<tr><td colspan=5 class="empty">Ingen tips</td></tr>'}</tbody>
+    </table></div>
+  </details>`;
+}
+
+function renderGames(el, games, open) {
+  if (!games.length) {
+    el.innerHTML = '<div class="empty">Ingen kamper å vise.</div>';
+    return;
+  }
+  let html = '', lastDate = '';
+  for (const g of games) {
+    const d = new Date(g.utc).toLocaleDateString('no-NO',
+      {weekday:'long', day:'numeric', month:'long', timeZone:'Europe/Oslo'});
+    if (d !== lastDate) { html += `<div class="datehead">${d}</div>`; lastDate = d; }
+    html += matchCard(g, open);
+  }
+  el.innerHTML = html;
+}
+
+function renderMatches() {
+  const played = D.games.filter(g => g.score)
+    .sort((a,b) => b.utc.localeCompare(a.utc));
+  renderGames(document.getElementById('matches'), played, false);
+}
+
+function renderUpcoming() {
+  const next = D.games.filter(g => !g.score && g.status !== 'FINISHED')
+    .sort((a,b) => a.utc.localeCompare(b.utc)).slice(0, 16);
+  renderGames(document.getElementById('upcoming'), next, false);
+}
+
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('nav button').forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+  for (const id of ['board','matches','upcoming'])
+    document.getElementById(id).hidden = (id !== b.dataset.tab);
+});
+
+renderBoard(); renderMatches(); renderUpcoming();
+</script>
+</body>
+</html>
