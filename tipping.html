@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VM-tipping 2026 – lever tips</title>
+<style>
+:root { --bg:#0d1b2a; --card:#1b263b; --line:#2e3f57; --text:#e0e1dd;
+        --muted:#9aa5b1; --accent:#ffd166; --green:#7ddf64; --red:#ef6461; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+       background:var(--bg); color:var(--text); }
+header { padding:1.2rem 1rem .6rem; text-align:center; }
+h1 { margin:0; font-size:1.5rem; }
+h2 { font-size:1.1rem; margin:1.6rem 0 .5rem; color:var(--accent); }
+.sub { color:var(--muted); font-size:.85rem; margin-top:.3rem; }
+.sub a { color:var(--accent); }
+main { max-width:880px; margin:0 auto; padding:0 .7rem 4rem; }
+.progress { position:sticky; top:0; z-index:5; background:var(--bg);
+            padding:.5rem 0 .4rem; }
+.bar { height:6px; background:var(--card); border-radius:3px; overflow:hidden; }
+.bar div { height:100%; background:var(--green); width:0; transition:width .2s; }
+.ptext { font-size:.78rem; color:var(--muted); text-align:right; margin-top:.2rem; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:10px;
+        padding: .7rem .8rem; margin:.6rem 0; }
+.game { display:flex; align-items:center; gap:.5rem; padding:.3rem 0;
+        border-bottom:1px solid var(--line); flex-wrap:wrap; }
+.game:last-of-type { border-bottom:none; }
+.gnum { color:var(--muted); font-size:.72rem; min-width:2.4rem; }
+.gteams { flex:1; min-width:11rem; font-size:.92rem; }
+.gdate { color:var(--muted); font-size:.72rem; min-width:5.5rem; }
+input[type=number] { width:3.1rem; padding:.42rem .2rem; text-align:center;
+        background:var(--bg); border:1px solid var(--line); border-radius:7px;
+        color:var(--text); font-size:1rem; -moz-appearance:textfield; }
+input[type=number]::-webkit-inner-spin-button { -webkit-appearance:none; }
+input[type=text] { width:100%; padding:.6rem .7rem; background:var(--bg);
+        border:1px solid var(--line); border-radius:7px; color:var(--text);
+        font-size:1rem; }
+input.bad { border-color:var(--red); }
+.dash { color:var(--muted); }
+.xtra { width:100%; display:flex; gap:.5rem; align-items:center;
+        padding:.2rem 0 .2rem 2.9rem; font-size:.8rem; color:var(--muted); }
+table.mini { width:100%; border-collapse:collapse; margin-top:.5rem;
+        font-size:.8rem; }
+table.mini td, table.mini th { padding:.2rem .4rem; border-bottom:1px solid var(--line);
+        text-align:left; color:var(--muted); }
+table.mini td.num { text-align:right; font-variant-numeric:tabular-nums; }
+table.mini tr.q td { color:var(--text); }
+button.primary { background:var(--accent); color:#222; border:none; font-weight:700;
+        padding:.8rem 1.6rem; border-radius:999px; font-size:1.05rem; cursor:pointer; }
+button.ghost { background:var(--card); color:var(--text); border:1px solid var(--line);
+        padding:.6rem 1.2rem; border-radius:999px; font-size:.9rem; cursor:pointer; }
+.errors { color:var(--red); font-size:.88rem; white-space:pre-line; margin:.6rem 0; }
+.result { display:none; }
+.code { font-family:ui-monospace,monospace; font-size:.72rem; word-break:break-all;
+        background:var(--bg); border:1px solid var(--line); border-radius:7px;
+        padding:.6rem; max-height:9rem; overflow:auto; margin:.6rem 0; }
+.actions { display:flex; gap:.6rem; flex-wrap:wrap; margin:.6rem 0; }
+.actions a { text-decoration:none; }
+.ok { color:var(--green); }
+.warn { color:var(--accent); font-size:.85rem; }
+footer { color:var(--muted); text-align:center; font-size:.75rem; padding:1rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>⚽ VM-tipping 2026 — lever tips</h1>
+  <div class="sub">Fyll ut alle 104 kamper. Skjemaet lagrer utkastet i
+  nettleseren din underveis. <a href="index.html">← Til resultatsiden</a></div>
+  <div class="sub" id="deadline"></div>
+</header>
+<main>
+  <div class="progress"><div class="bar"><div id="barfill"></div></div>
+    <div class="ptext" id="ptext"></div></div>
+
+  <h2>Navnet ditt</h2>
+  <div class="card"><input type="text" id="name" placeholder="Fornavn Etternavn"
+    autocomplete="name"></div>
+
+  <div id="groups"></div>
+  <div id="knockout"></div>
+
+  <h2>Lever</h2>
+  <div class="card">
+    <div class="sub" style="margin-bottom:.6rem">Når alt er utfylt genereres en
+    tippekode som du sender på e-post — innholdet er hele tipset ditt.</div>
+    <button class="primary" id="make">Generer tippekode</button>
+    <div class="errors" id="errors"></div>
+    <div class="result" id="result">
+      <div class="ok">✅ Alt er utfylt og gyldig!</div>
+      <div class="code" id="code"></div>
+      <div class="actions">
+        <a id="mailto"><button class="primary">Send på e-post</button></a>
+        <button class="ghost" id="copy">Kopier koden</button>
+        <button class="ghost" id="download">Last ned som fil</button>
+      </div>
+      <div class="sub">Får du ikke åpnet e-postprogrammet: kopier koden og send
+      den til <span id="email"></span> med navnet ditt i emnefeltet.</div>
+    </div>
+  </div>
+</main>
+<footer>2 p riktig målsum · 3 p riktig utfall · 5 p eksakt resultat ·
+2 p per riktig gruppeplassering (ordinær tid teller)</footer>
+<script id="data" type="application/json">{"email": "oyvind.tomren@gmail.com", "deadline": "2026-06-11T17:00:00+00:00", "groups": [{"letter": "A", "games": [{"g": 1, "h": "Mexico", "a": "South Africa", "utc": "2026-06-11T19:00:00Z"}, {"g": 2, "h": "South Korea", "a": "Czechia", "utc": "2026-06-12T02:00:00Z"}, {"g": 25, "h": "Czechia", "a": "South Africa", "utc": "2026-06-18T16:00:00Z"}, {"g": 28, "h": "Mexico", "a": "South Korea", "utc": "2026-06-19T01:00:00Z"}, {"g": 53, "h": "Czechia", "a": "Mexico", "utc": "2026-06-25T01:00:00Z"}, {"g": 54, "h": "South Africa", "a": "South Korea", "utc": "2026-06-25T01:00:00Z"}]}, {"letter": "B", "games": [{"g": 3, "h": "Canada", "a": "Bosnia and Herzegovina", "utc": "2026-06-12T19:00:00Z"}, {"g": 6, "h": "Qatar", "a": "Switzerland", "utc": "2026-06-13T19:00:00Z"}, {"g": 26, "h": "Switzerland", "a": "Bosnia and Herzegovina", "utc": "2026-06-18T19:00:00Z"}, {"g": 27, "h": "Canada", "a": "Qatar", "utc": "2026-06-18T22:00:00Z"}, {"g": 49, "h": "Switzerland", "a": "Canada", "utc": "2026-06-24T19:00:00Z"}, {"g": 50, "h": "Bosnia and Herzegovina", "a": "Qatar", "utc": "2026-06-24T19:00:00Z"}]}, {"letter": "C", "games": [{"g": 7, "h": "Brazil", "a": "Morocco", "utc": "2026-06-13T22:00:00Z"}, {"g": 8, "h": "Haiti", "a": "Scotland", "utc": "2026-06-14T01:00:00Z"}, {"g": 31, "h": "Scotland", "a": "Morocco", "utc": "2026-06-19T22:00:00Z"}, {"g": 32, "h": "Brazil", "a": "Haiti", "utc": "2026-06-20T00:30:00Z"}, {"g": 51, "h": "Scotland", "a": "Brazil", "utc": "2026-06-24T22:00:00Z"}, {"g": 52, "h": "Morocco", "a": "Haiti", "utc": "2026-06-24T22:00:00Z"}]}, {"letter": "D", "games": [{"g": 4, "h": "USA", "a": "Paraguay", "utc": "2026-06-13T01:00:00Z"}, {"g": 5, "h": "Australia", "a": "Turkey", "utc": "2026-06-14T04:00:00Z"}, {"g": 29, "h": "Turkey", "a": "Paraguay", "utc": "2026-06-20T03:00:00Z"}, {"g": 30, "h": "USA", "a": "Australia", "utc": "2026-06-19T19:00:00Z"}, {"g": 59, "h": "Turkey", "a": "USA", "utc": "2026-06-26T02:00:00Z"}, {"g": 60, "h": "Paraguay", "a": "Australia", "utc": "2026-06-26T02:00:00Z"}]}, {"letter": "E", "games": [{"g": 9, "h": "Germany", "a": "Curacao", "utc": "2026-06-14T17:00:00Z"}, {"g": 11, "h": "Ivory Coast", "a": "Ecuador", "utc": "2026-06-14T23:00:00Z"}, {"g": 35, "h": "Germany", "a": "Ivory Coast", "utc": "2026-06-20T20:00:00Z"}, {"g": 36, "h": "Ecuador", "a": "Curacao", "utc": "2026-06-21T00:00:00Z"}, {"g": 55, "h": "Ecuador", "a": "Germany", "utc": "2026-06-25T20:00:00Z"}, {"g": 56, "h": "Curacao", "a": "Ivory Coast", "utc": "2026-06-25T20:00:00Z"}]}, {"letter": "F", "games": [{"g": 10, "h": "Netherlands", "a": "Japan", "utc": "2026-06-14T20:00:00Z"}, {"g": 12, "h": "Sweden", "a": "Tunisia", "utc": "2026-06-15T02:00:00Z"}, {"g": 33, "h": "Tunisia", "a": "Japan", "utc": "2026-06-21T04:00:00Z"}, {"g": 34, "h": "Netherlands", "a": "Sweden", "utc": "2026-06-20T17:00:00Z"}, {"g": 57, "h": "Japan", "a": "Sweden", "utc": "2026-06-25T23:00:00Z"}, {"g": 58, "h": "Tunisia", "a": "Netherlands", "utc": "2026-06-25T23:00:00Z"}]}, {"letter": "G", "games": [{"g": 14, "h": "Belgium", "a": "Egypt", "utc": "2026-06-15T19:00:00Z"}, {"g": 16, "h": "Iran", "a": "New Zealand", "utc": "2026-06-16T01:00:00Z"}, {"g": 38, "h": "Belgium", "a": "Iran", "utc": "2026-06-21T19:00:00Z"}, {"g": 40, "h": "New Zealand", "a": "Egypt", "utc": "2026-06-22T01:00:00Z"}, {"g": 65, "h": "Egypt", "a": "Iran", "utc": "2026-06-27T03:00:00Z"}, {"g": 66, "h": "New Zealand", "a": "Belgium", "utc": "2026-06-27T03:00:00Z"}]}, {"letter": "H", "games": [{"g": 13, "h": "Spain", "a": "Cape Verde", "utc": "2026-06-15T16:00:00Z"}, {"g": 15, "h": "Saudi Arabia", "a": "Uruguay", "utc": "2026-06-15T22:00:00Z"}, {"g": 37, "h": "Spain", "a": "Saudi Arabia", "utc": "2026-06-21T16:00:00Z"}, {"g": 39, "h": "Uruguay", "a": "Cape Verde", "utc": "2026-06-21T22:00:00Z"}, {"g": 63, "h": "Uruguay", "a": "Spain", "utc": "2026-06-27T00:00:00Z"}, {"g": 64, "h": "Cape Verde", "a": "Saudi Arabia", "utc": "2026-06-27T00:00:00Z"}]}, {"letter": "I", "games": [{"g": 18, "h": "France", "a": "Senegal", "utc": "2026-06-16T19:00:00Z"}, {"g": 19, "h": "Iraq", "a": "Norway", "utc": "2026-06-16T22:00:00Z"}, {"g": 42, "h": "France", "a": "Iraq", "utc": "2026-06-22T21:00:00Z"}, {"g": 43, "h": "Norway", "a": "Senegal", "utc": "2026-06-23T00:00:00Z"}, {"g": 61, "h": "Norway", "a": "France", "utc": "2026-06-26T19:00:00Z"}, {"g": 62, "h": "Senegal", "a": "Iraq", "utc": "2026-06-26T19:00:00Z"}]}, {"letter": "J", "games": [{"g": 17, "h": "Austria", "a": "Jordan", "utc": "2026-06-17T04:00:00Z"}, {"g": 20, "h": "Argentina", "a": "Algeria", "utc": "2026-06-17T01:00:00Z"}, {"g": 41, "h": "Argentina", "a": "Austria", "utc": "2026-06-22T17:00:00Z"}, {"g": 44, "h": "Jordan", "a": "Algeria", "utc": "2026-06-23T03:00:00Z"}, {"g": 71, "h": "Algeria", "a": "Austria", "utc": "2026-06-28T02:00:00Z"}, {"g": 72, "h": "Jordan", "a": "Argentina", "utc": "2026-06-28T02:00:00Z"}]}, {"letter": "K", "games": [{"g": 21, "h": "Portugal", "a": "DR Congo", "utc": "2026-06-17T17:00:00Z"}, {"g": 24, "h": "Uzbekistan", "a": "Colombia", "utc": "2026-06-18T02:00:00Z"}, {"g": 45, "h": "Portugal", "a": "Uzbekistan", "utc": "2026-06-23T17:00:00Z"}, {"g": 48, "h": "Colombia", "a": "DR Congo", "utc": "2026-06-24T02:00:00Z"}, {"g": 69, "h": "Colombia", "a": "Portugal", "utc": "2026-06-27T23:30:00Z"}, {"g": 70, "h": "DR Congo", "a": "Uzbekistan", "utc": "2026-06-27T23:30:00Z"}]}, {"letter": "L", "games": [{"g": 22, "h": "England", "a": "Croatia", "utc": "2026-06-17T20:00:00Z"}, {"g": 23, "h": "Ghana", "a": "Panama", "utc": "2026-06-17T23:00:00Z"}, {"g": 46, "h": "England", "a": "Ghana", "utc": "2026-06-23T20:00:00Z"}, {"g": 47, "h": "Panama", "a": "Croatia", "utc": "2026-06-23T23:00:00Z"}, {"g": 67, "h": "Panama", "a": "England", "utc": "2026-06-27T21:00:00Z"}, {"g": 68, "h": "Croatia", "a": "Ghana", "utc": "2026-06-27T21:00:00Z"}]}], "knockout": [{"g": 73, "stage": "32-delsfinale", "utc": "2026-06-28T19:00:00Z"}, {"g": 74, "stage": "32-delsfinale", "utc": "2026-06-29T20:30:00Z"}, {"g": 75, "stage": "32-delsfinale", "utc": "2026-06-30T01:00:00Z"}, {"g": 76, "stage": "32-delsfinale", "utc": "2026-06-29T17:00:00Z"}, {"g": 77, "stage": "32-delsfinale", "utc": "2026-06-30T21:00:00Z"}, {"g": 78, "stage": "32-delsfinale", "utc": "2026-06-30T17:00:00Z"}, {"g": 79, "stage": "32-delsfinale", "utc": "2026-07-01T01:00:00Z"}, {"g": 80, "stage": "32-delsfinale", "utc": "2026-07-01T16:00:00Z"}, {"g": 81, "stage": "32-delsfinale", "utc": "2026-07-02T00:00:00Z"}, {"g": 82, "stage": "32-delsfinale", "utc": "2026-07-01T20:00:00Z"}, {"g": 83, "stage": "32-delsfinale", "utc": "2026-07-02T23:00:00Z"}, {"g": 84, "stage": "32-delsfinale", "utc": "2026-07-02T19:00:00Z"}, {"g": 85, "stage": "32-delsfinale", "utc": "2026-07-03T03:00:00Z"}, {"g": 86, "stage": "32-delsfinale", "utc": "2026-07-03T22:00:00Z"}, {"g": 87, "stage": "32-delsfinale", "utc": "2026-07-04T01:30:00Z"}, {"g": 88, "stage": "32-delsfinale", "utc": "2026-07-03T18:00:00Z"}, {"g": 89, "stage": "Åttedelsfinale", "utc": "2026-07-04T21:00:00Z"}, {"g": 90, "stage": "Åttedelsfinale", "utc": "2026-07-04T17:00:00Z"}, {"g": 91, "stage": "Åttedelsfinale", "utc": "2026-07-05T20:00:00Z"}, {"g": 92, "stage": "Åttedelsfinale", "utc": "2026-07-06T00:00:00Z"}, {"g": 93, "stage": "Åttedelsfinale", "utc": "2026-07-06T19:00:00Z"}, {"g": 94, "stage": "Åttedelsfinale", "utc": "2026-07-07T00:00:00Z"}, {"g": 95, "stage": "Åttedelsfinale", "utc": "2026-07-07T16:00:00Z"}, {"g": 96, "stage": "Åttedelsfinale", "utc": "2026-07-07T20:00:00Z"}, {"g": 97, "stage": "Kvartfinale", "utc": "2026-07-09T20:00:00Z"}, {"g": 98, "stage": "Kvartfinale", "utc": "2026-07-10T19:00:00Z"}, {"g": 99, "stage": "Kvartfinale", "utc": "2026-07-11T21:00:00Z"}, {"g": 100, "stage": "Kvartfinale", "utc": "2026-07-12T01:00:00Z"}, {"g": 101, "stage": "Semifinale", "utc": "2026-07-14T19:00:00Z"}, {"g": 102, "stage": "Semifinale", "utc": "2026-07-15T19:00:00Z"}, {"g": 103, "stage": "Bronsefinale", "utc": "2026-07-18T21:00:00Z"}, {"g": 104, "stage": "Finale", "utc": "2026-07-19T19:00:00Z"}]}</script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+const esc = s => String(s ?? '').replace(/[&<>"]/g,
+  c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmtDate = iso => new Date(iso).toLocaleDateString('no-NO',
+  {day:'numeric', month:'short', timeZone:'Europe/Oslo'});
+
+document.getElementById('email').textContent = D.email;
+const dl = new Date(D.deadline);
+document.getElementById('deadline').innerHTML = (Date.now() > dl)
+  ? '<span class="warn">⚠️ Fristen er passert — hør med arrangøren om tipset fortsatt kan telle.</span>'
+  : 'Frist: ' + dl.toLocaleString('no-NO', {weekday:'long', day:'numeric',
+      month:'long', hour:'2-digit', minute:'2-digit', timeZone:'Europe/Oslo'});
+
+// --- Bygg skjemaet -------------------------------------------------------
+function numInput(id) {
+  return `<input type="number" min="0" max="19" inputmode="numeric" id="${id}">`;
+}
+function gameRow(g, teams) {
+  let extra = '';
+  if (g.g > 72) {
+    extra = `<div class="xtra" id="et${g.g}" hidden>e.o. (sammenlagt):
+        ${numInput('e'+g.g+'h')}<span class="dash">–</span>${numInput('e'+g.g+'a')}</div>
+      <div class="xtra" id="pens${g.g}" hidden>straffer:
+        ${numInput('p'+g.g+'h')}<span class="dash">–</span>${numInput('p'+g.g+'a')}</div>`;
+  }
+  return `<div class="game" id="row${g.g}">
+    <span class="gnum">#${g.g}</span>
+    <span class="gteams">${teams}</span>
+    <span class="gdate">${fmtDate(g.utc)}</span>
+    ${numInput('s'+g.g+'h')}<span class="dash">–</span>${numInput('s'+g.g+'a')}
+    ${extra}</div>`;
+}
+
+let html = '';
+for (const grp of D.groups) {
+  html += `<h2>Gruppe ${grp.letter}</h2><div class="card">`
+    + grp.games.map(g => gameRow(g, `${esc(g.h)} – ${esc(g.a)}`)).join('')
+    + `<table class="mini" id="table${grp.letter}"></table></div>`;
+}
+document.getElementById('groups').innerHTML = html;
+
+html = '';
+let lastStage = '';
+for (const g of D.knockout) {
+  if (g.stage !== lastStage) {
+    if (lastStage) html += '</div>';
+    html += `<h2>${esc(g.stage)}</h2>
+      <div class="sub">Lagene er ukjente nå — du tipper resultatet og hvilken
+      side av kampoppsettet som går videre. Uavgjort? Fyll inn e.o./straffer.</div>
+      <div class="card">`;
+    lastStage = g.stage;
+  }
+  html += gameRow(g, 'Lag 1 – Lag 2');
+}
+document.getElementById('knockout').innerHTML = html + '</div>';
+
+// --- Hjelpere ------------------------------------------------------------
+const val = id => {
+  const el = document.getElementById(id);
+  if (!el || el.value === '') return null;
+  const n = Number(el.value);
+  return Number.isInteger(n) && n >= 0 && n <= 19 ? n : NaN;
+};
+const pair = p => { const h = val(p+'h'), a = val(p+'a');
+  return (h === null && a === null) ? null : [h, a]; };
+const complete = p => p && Number.isInteger(p[0]) && Number.isInteger(p[1]);
+
+// FIFAs grupperegler: poeng, målforskjell, mål, innbyrdes oppgjør.
+function rankGroup(played) {
+  const teams = [...new Set(played.flatMap(p => [p[0], p[1]]))].sort();
+  const stats = (t, sub) => { let p=0, gf=0, ga=0;
+    for (const [h, a, hg, ag] of sub) {
+      if (t === h) { p += hg>ag?3:hg===ag?1:0; gf += hg; ga += ag; }
+      else if (t === a) { p += ag>hg?3:hg===ag?1:0; gf += ag; ga += hg; } }
+    return [p, gf-ga, gf]; };
+  const cmp = (x, y) => y[0]-x[0] || y[1]-x[1] || y[2]-x[2];
+  const keyed = [...teams].sort((a, b) => cmp(stats(a, played), stats(b, played)));
+  const out = []; let i = 0;
+  while (i < keyed.length) {
+    const s0 = stats(keyed[i], played);
+    const tied = keyed.filter(t => cmp(stats(t, played), s0) === 0);
+    if (tied.length === 1) { out.push(keyed[i]); i++; continue; }
+    const h2h = played.filter(([h, a]) => tied.includes(h) && tied.includes(a));
+    out.push(...[...tied].sort((a, b) => cmp(stats(a, h2h), stats(b, h2h))));
+    i += tied.length;
+  }
+  return out;
+}
+
+function renderTable(grp) {
+  const played = [];
+  for (const g of grp.games) {
+    const s = pair('s' + g.g);
+    if (!complete(s)) { document.getElementById('table'+grp.letter).innerHTML=''; return; }
+    played.push([g.h, g.a, s[0], s[1]]);
+  }
+  const order = rankGroup(played);
+  document.getElementById('table'+grp.letter).innerHTML =
+    '<tr><th></th><th>Din tabell</th></tr>' + order.map((t, i) =>
+      `<tr class="${i < 2 ? 'q' : ''}"><td class="num">${i+1}.</td><td>${esc(t)}</td></tr>`
+    ).join('');
+}
+
+function updateKO(g) {
+  const s = pair('s' + g), et = document.getElementById('et' + g),
+        pens = document.getElementById('pens' + g);
+  const drawFT = complete(s) && s[0] === s[1];
+  et.hidden = !drawFT;
+  const e = pair('e' + g);
+  pens.hidden = !(drawFT && complete(e) && e[0] === e[1]);
+}
+
+function progress() {
+  let filled = 0;
+  for (let g = 1; g <= 104; g++) if (complete(pair('s' + g))) filled++;
+  document.getElementById('barfill').style.width = (filled / 104 * 100) + '%';
+  document.getElementById('ptext').textContent = `${filled} av 104 kamper utfylt`;
+  return filled;
+}
+
+// --- Autolagring ---------------------------------------------------------
+const KEY = 'vmtips2026';
+function saveDraft() {
+  const d = { name: document.getElementById('name').value, v: {} };
+  document.querySelectorAll('input[type=number]').forEach(el => {
+    if (el.value !== '') d.v[el.id] = el.value; });
+  localStorage.setItem(KEY, JSON.stringify(d));
+}
+function loadDraft() {
+  try {
+    const d = JSON.parse(localStorage.getItem(KEY) || '{}');
+    if (d.name) document.getElementById('name').value = d.name;
+    for (const [id, v] of Object.entries(d.v || {})) {
+      const el = document.getElementById(id);
+      if (el) el.value = v;
+    }
+  } catch (e) {}
+}
+
+function refresh() {
+  for (const g of D.knockout) updateKO(g.g);
+  for (const grp of D.groups) renderTable(grp);
+  progress();
+}
+loadDraft(); refresh();
+document.querySelector('main').addEventListener('input', () => {
+  saveDraft(); refresh();
+});
+
+// --- Validering og tippekode --------------------------------------------
+function buildCode() {
+  const errors = [];
+  const name = document.getElementById('name').value.trim().replace(/\|/g, ' ');
+  if (!name) errors.push('Skriv inn navnet ditt.');
+  const fields = [];
+  document.querySelectorAll('input').forEach(el => el.classList.remove('bad'));
+
+  for (let g = 1; g <= 104; g++) {
+    const s = pair('s' + g);
+    if (!complete(s)) {
+      errors.push(`Kamp ${g}: mangler resultat.`);
+      ['s'+g+'h','s'+g+'a'].forEach(id =>
+        document.getElementById(id).classList.add('bad'));
+      continue;
+    }
+    let f = `${s[0]}-${s[1]}`;
+    if (g > 72 && s[0] === s[1]) {
+      const e = pair('e' + g);
+      if (!complete(e)) {
+        errors.push(`Kamp ${g}: uavgjort — fyll inn resultat etter e.o.`);
+        continue;
+      }
+      f += `+${e[0]}-${e[1]}`;
+      if (e[0] === e[1]) {
+        const p = pair('p' + g);
+        if (!complete(p) || p[0] === p[1]) {
+          errors.push(`Kamp ${g}: fortsatt uavgjort — straffesparkene må kåre en vinner.`);
+          continue;
+        }
+        f += `+${p[0]}-${p[1]}`;
+      }
+    }
+    fields.push(f);
+  }
+  if (errors.length || fields.length !== 104) return { errors };
+  return { errors: [], name, code: `VM26.1|${name}|${fields.join(';')}` };
+}
+
+document.getElementById('make').onclick = () => {
+  const r = buildCode();
+  const errEl = document.getElementById('errors');
+  const resEl = document.getElementById('result');
+  if (r.errors.length) {
+    errEl.textContent = r.errors.slice(0, 12).join('\n')
+      + (r.errors.length > 12 ? `\n… og ${r.errors.length - 12} til.` : '');
+    resEl.style.display = 'none';
+    return;
+  }
+  errEl.textContent = '';
+  resEl.style.display = 'block';
+  document.getElementById('code').textContent = r.code;
+  document.getElementById('mailto').href = 'mailto:' + D.email
+    + '?subject=' + encodeURIComponent('VM-tipping 2026 – ' + r.name)
+    + '&body=' + encodeURIComponent(r.code + '\n\n(generert av tippeskjemaet)');
+  document.getElementById('copy').onclick = () =>
+    navigator.clipboard.writeText(r.code).then(() => {
+      document.getElementById('copy').textContent = 'Kopiert ✓';
+      setTimeout(() => document.getElementById('copy').textContent = 'Kopier koden', 2000);
+    });
+  document.getElementById('download').onclick = () => {
+    const blob = new Blob([r.code], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'vm-tipping-2026-' + r.name.replace(/\s+/g, '_') + '.txt';
+    a.click();
+  };
+  resEl.scrollIntoView({ behavior: 'smooth' });
+};
+</script>
+</body>
+</html>
